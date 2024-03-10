@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .dot {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            color: #fff;
+            text-align: center;
+            line-height: 50px;
+            background-color: blue;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        #teste {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            border: 1px solid #000;
+            padding: 50px;
+        }
+
+        .line {
+            stroke: black;
+            stroke-width: 2;
+        }
+
+        .svg {
+            width:400px;
+            height:400px
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+    <div id="teste">
+
+
+    </div>
+
+    <script>
+        var div = document.getElementById('teste')
+        var a = [
+            'a', 'b', 'c'
+        ]
+        var centers = []
+        for(let i =0; i < a.length; i++){
+            var dot = document.createElement('div')
+            dot.classList.add('dot') 
+
+            // Generate random position
+            var randomX = Math.floor(Math.random() * (div.offsetWidth - dot.offsetWidth - 100)) + 50;
+            var randomY = Math.floor(Math.random() * (div.offsetHeight - dot.offsetHeight - 100)) + 50;
+
+            dot.style.left = randomX + 'px';
+            dot.style.top = randomY + 'px';
+
+            centers.push([randomX, randomY])
+
+            div.appendChild(dot)
+        }
+
+
+        
+            
+        var svg = document.createElement('svg')
+        svg.classList.add('svg')
+        var line = document.createElement('line')
+
+        line.classList.add('line')
+
+        line.setAttribute('x1', centers[0][0])
+        line.setAttribute('y1', centers[0][1])
+        line.setAttribute('x2', centers[1][0])
+        line.setAttribute('y2', centers[1][1])
+
+        console.log(centers)
+
+        svg.appendChild(line)
+        div.appendChild(svg)
+
+    </script>
+</body>
+</html>
