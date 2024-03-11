@@ -29,8 +29,8 @@ for(let i = 0; i < nos.length; i++){
     centerY = rect.top + rect.height / 2
     
     label.style.position = 'absolute'
-    label.style.top = rect.bottom
-    label.style.left = rect.left
+    label.style.top = rect.bottom - 10 + 'px'
+    label.style.left = rect.left + 'px'
     container.appendChild(label)
     centers.push([centerX, centerY])
 }
