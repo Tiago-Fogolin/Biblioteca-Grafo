@@ -3,15 +3,18 @@ class Node:
         self.connections = []
         self.label = label
 
-    def add_connection(self, node, weight=None, bidirectional=False):
+    def add_connection(self, node, weight=None, directed=False):
         conn = {
             'node': node,
-            'weight': weight
+            'weight': weight,
+            'directed': directed
         }
         self.connections.append(conn)
 
-        if bidirectional:
-            node.add_connection(self, weight)
+        if not directed:
+            new_conn = conn.copy()
+            new_conn['node'] = self
+            node.connections.append(new_conn)
 
     def __str__(self) -> str:
         return self.label
@@ -27,7 +30,7 @@ class Graph:
         if new_node not in self.nodes:
             self.nodes.append(new_node)
 
-    def create_connection(self, from_, to_, weight=None, bidirectional=False):
+    def create_connection(self, from_, to_, weight=None, directed=False):
         from_node = None
         to_node = None
         for node in self.nodes:
@@ -39,7 +42,7 @@ class Graph:
         if not from_node or not to_node:
             raise Exception("Node not found.")
     
-        from_node.add_connection(to_node, weight, bidirectional)
+        from_node.add_connection(to_node, weight, directed)
 
     def get_connections(self):
         all_connections = []
@@ -63,7 +66,7 @@ gra = Graph()
 gra.add_node('teste')
 gra.add_node('teste2')
 
-gra.create_connection('teste', 'teste2', weight=1, bidirectional=True)
+gra.create_connection('teste', 'teste2', weight=1, directed=False)
 
 for conn in gra.get_connections():
     print(conn, end= '\n')
