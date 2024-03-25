@@ -1,5 +1,20 @@
-from node import Node
-from html_writer import HtmlWriter
+from graph.node import Node
+from template.html_writer import HtmlWriter
+
+def create_nodes_from_labels(size, labels):
+        str_list = labels if labels else list(map(str, range(size)))
+        
+        return list(map(Node, str_list))
+    
+def create_node_dict(nodes):
+    node_dict = dict(
+        [(i, str(node)) for i, node in enumerate(nodes)]
+    )
+
+    return node_dict
+
+def invert_node_dict(node_dict):
+    return dict( (node_label, i) for i, node_label in node_dict.items() )
 
 class Graph:
     
@@ -42,12 +57,12 @@ class Graph:
         return all_connections
     
     def create_from_adj_matrix(self, adj_matrix, directed=False,custom_labels=None):
-        self.nodes = self.__create_nodes_from_labels(
+        self.nodes = create_nodes_from_labels(
             len(adj_matrix), 
             custom_labels
         )
 
-        self.node_dict = self.__create_node_dict()
+        self.node_dict = create_node_dict(self.nodes)
 
         for i in range(len(adj_matrix)):
             for j in range(len(adj_matrix)):
@@ -65,7 +80,7 @@ class Graph:
     def generate_adj_matrix(self):
         matrix_size = len(self.nodes)
         adj_matrix = [[0 for i in range(matrix_size)] for i in range(matrix_size)]
-        node_dict = self.__invert_node_dict(self.__create_node_dict())
+        node_dict = invert_node_dict(create_node_dict(self.nodes))
         connections = self.get_connections()
 
         for conn in connections:
@@ -79,42 +94,3 @@ class Graph:
         html_writer = HtmlWriter(list(map(str, self.nodes)), self.get_connections())
 
         html_writer.output(file_name)
-
-    def __create_nodes_from_labels(self, size, labels):
-        if labels:
-            return list(map(Node, labels))
-    
-        str_range = list(map(str, range(size)))
-        return list(map(Node, str_range))
-    
-    def __create_node_dict(self):
-        node_dict = dict(
-            [(i, str(node)) for i, node in enumerate(self.nodes)]
-        )
-
-        return node_dict
-
-    def __invert_node_dict(self, node_dict):
-        return dict( (node_label, i) for i, node_label in node_dict.items() )
-
-
-grafo = Graph()
-matriz_adjacencia = [
-    [0, 1, 1, 0, 0],
-    [0, 0, 1, 0, 1],
-    [0, 0, 0, 1, 0],
-    [0, 0, 0, 0, 1],
-    [0, 0, 0, 0, 0]
-]
-
-grafo.create_from_adj_matrix(matriz_adjacencia, directed=True, custom_labels=['zero','um', 'dois', 'tres', 'quatro'])
-
-for item in grafo.generate_adj_matrix():
-    print(item, end= '\n')
-
-print()
-
-for conn in grafo.get_connections():
-    print(conn, end= '\n')
-
-grafo.output_html('teste')
