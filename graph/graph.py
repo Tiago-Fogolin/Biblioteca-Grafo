@@ -17,13 +17,20 @@ def invert_node_dict(node_dict):
     return dict( (node_label, i) for i, node_label in node_dict.items() )
 
 class Graph:
+    """
+    A class that represents a graph with nodes and its connections.
+    """
     
     def __init__(self):
         self.nodes = []
 
-    def add_node(self, label):
+    def add_node(self, label: str) -> None:
+        """
+        Args:
+            label (str): Indicates the label of a new node in the graph.
+        """
         new_node = Node(label)
-        if new_node not in self.nodes:
+        if str(new_node) not in list(map(str, self.nodes)):
             self.nodes.append(new_node)
 
     def create_connection(self, from_, to_, weight=None, directed=False, called_from_adj_matrix=False):
