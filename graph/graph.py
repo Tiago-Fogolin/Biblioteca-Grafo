@@ -33,7 +33,7 @@ class Graph:
         if str(new_node) not in list(map(str, self.nodes)):
             self.nodes.append(new_node)
 
-    def create_connection(self, from_, to_, weight=None, directed=False, called_from_adj_matrix=False):
+    def create_connection(self, from_, to_, weight=None, directed=False):
         from_node = None
         to_node = None
         for node in self.nodes:
@@ -45,7 +45,7 @@ class Graph:
         if not from_node or not to_node:
             raise Exception("Node not found.")
     
-        from_node.add_connection(to_node, weight, directed, called_from_adj_matrix)
+        from_node.add_connection(to_node, weight, directed)
 
     def get_connections(self):
         all_connections = []
@@ -81,7 +81,6 @@ class Graph:
                         self.node_dict[j],
                         weight,
                         directed,
-                        called_from_adj_matrix=True
                     )
 
     def generate_adj_matrix(self):
