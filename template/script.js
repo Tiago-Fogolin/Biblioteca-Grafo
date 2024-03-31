@@ -8,11 +8,11 @@ class NodeConnections{
     }
 
     createRandomX(){
-        return Math.floor(Math.random() * (window.innerWidth - 50))
+        return Math.floor(Math.random() * (window.innerWidth - 150))
     }
 
     createRandomY(){
-        return Math.floor(Math.random() * (window.innerHeight - 50))
+        return Math.floor(Math.random() * (window.innerHeight - 150))
     }
 
     createNodeLabel(node_label, node_rect){
@@ -41,8 +41,9 @@ class NodeConnections{
     }
 
     getNodeCenters(node_rect){
-        let centerX = node_rect.left + node_rect.width / 2
-        let centerY = node_rect.top + node_rect.height / 2
+        let containerRect = this.container.getBoundingClientRect()
+        let centerX = node_rect.left - containerRect.left + node_rect.width / 2
+        let centerY = node_rect.top - containerRect.top + node_rect.height / 2
 
         return [centerX, centerY]
     }
@@ -71,31 +72,42 @@ class NodeConnections{
         return this.centerPositions[node][1]
     }
 
-    drawConnections(){
+    drawLine(ctx, startX, endX, startY, endY){
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.strokeStyle = '#000';
+        ctx.stroke();
+    }
+
+    drawArrow(ctx, startX, endX, startY, endY){
+        this.drawLine(ctx, startX, endX, startY, endY)
+        let arrowSize = 10
+        let angle = Math.atan2(endY - startY, endX - startX)
+        let midX = ((startX + endX) / 2)
+        let midY = ((startY + endY) / 2)
+        ctx.beginPath()
+        ctx.moveTo(midX, midY)
+        ctx.lineTo(midX - arrowSize * Math.cos(angle - Math.PI / 6), midY - arrowSize * Math.sin(angle - Math.PI / 6))
+        ctx.lineTo(midX - arrowSize * Math.cos(angle + Math.PI / 6), midY - arrowSize * Math.sin(angle + Math.PI / 6))
+        ctx.closePath()
+        ctx.fill()
+    }
+
+    drawConnections(ctx){
         for (let i = 0 ; i < this.connections.length; i++){
-            ctx.beginPath();
+            
+    
+            let from_node = this.connections[i].from
+            let to_node = this.connections[i].to
         
-            let from_node = this.connections[i].from;
-            let to_node = this.connections[i].to;
-        
-            ctx.moveTo(this.getXPosition(from_node), this.getYPosition(from_node));
-            ctx.lineTo(this.getXPosition(to_node), this.getYPosition(to_node));
-            ctx.strokeStyle = '#000';
-            ctx.stroke();   
-        
-            // var arrowSize = 10;
-            // var endY = positions[to_node][1];
-            // var startY = positions[from_node][1];
-            // var endX = positions[to_node][0];
-            // var startX = positions[from_node][0]
-        
-            // var angle = Math.atan2(endY - startY, endX - startX);
-            // ctx.beginPath();
-            // ctx.moveTo(endX, endY);
-            // ctx.lineTo(endX - arrowSize * Math.cos(angle - Math.PI / 6), endY - arrowSize * Math.sin(angle - Math.PI / 6));
-            // ctx.lineTo(endX - arrowSize * Math.cos(angle + Math.PI / 6), endY - arrowSize * Math.sin(angle + Math.PI / 6));
-            // ctx.closePath();
-            // ctx.fill();
+            var startX = this.getXPosition(from_node)
+            var endX = this.getXPosition(to_node)
+            var startY = this.getYPosition(from_node)
+            var endY = this.getYPosition(to_node)
+
+            this.drawLine(ctx, startX, endX, startY, endY)
+            this.drawArrow(ctx, startX, endX, startY, endY)
         }
     }
 }
@@ -117,4 +129,4 @@ canvas.height = window.innerHeight;
 let node_connections = new NodeConnections(nodes, connections, container)
 
 node_connections.drawNodes()
-node_connections.drawConnections()
+node_connections.drawConnections(ctx)
