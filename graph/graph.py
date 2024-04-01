@@ -100,7 +100,7 @@ class Graph:
     def output_html(self, file_name):
         svg_writer = SVGWriter()
 
-        svg_writer.draw_graph(self.nodes)
+        svg_writer.draw_graph(self.nodes, self.get_connections())
 
         html_writer = HtmlWriter(str(svg_writer.get_svg()))
 
