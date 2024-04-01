@@ -1,5 +1,6 @@
 from graph.node import Node
 from template.html_writer import HtmlWriter
+from template.svg_writer import SVGWriter
 
 def create_nodes_from_labels(size, labels):
         str_list = labels if labels else list(map(str, range(size)))
@@ -97,6 +98,10 @@ class Graph:
         return adj_matrix
     
     def output_html(self, file_name):
-        html_writer = HtmlWriter(list(map(str, self.nodes)), self.get_connections())
+        svg_writer = SVGWriter()
+
+        svg_writer.draw_graph(self.nodes)
+
+        html_writer = HtmlWriter(str(svg_writer.get_svg()))
 
         html_writer.output(file_name)
