@@ -24,15 +24,17 @@ class Graph:
     
     def __init__(self):
         self.nodes = []
+        self.node_index = 0
 
     def add_node(self, label: str) -> None:
         """
         Args:
             label (str): Indicates the label of a new node in the graph.
         """
-        new_node = Node(label)
+        new_node = Node(label, self.node_index)
         if str(new_node) not in list(map(str, self.nodes)):
             self.nodes.append(new_node)
+            self.node_index += 1
 
     def create_connection(self, from_, to_, weight=None, directed=False):
         from_node = None
