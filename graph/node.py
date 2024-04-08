@@ -3,8 +3,6 @@ class Node:
     A class that represents a node in the graph.   
     """
 
-    index = 0
-
     def __init__(self, label: str) -> None:
         
         """
@@ -14,11 +12,6 @@ class Node:
         
         self.connections = []
         self.label = label
-        self.update_index()
-
-    def update_index(self):
-        self.index = Node.index
-        Node.index += 1
 
     def add_connection(self, node: 'Node', weight: int = 1, directed: bool = False) -> None:
         """

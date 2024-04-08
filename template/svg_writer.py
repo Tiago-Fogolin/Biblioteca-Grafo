@@ -54,10 +54,10 @@ class SVGWriter:
         self.draw_nodes(nodes)
 
     def generate_node_positions(self, nodes):
-        for node in nodes:
+        for i, node in enumerate(nodes):
             random_x = random.randint(20, 600)
             random_y = random.randint(20, 600)
-            self.centers[node.label] = {'x':random_x, 'y':random_y, 'index': node.index}
+            self.centers[node.label] = {'x':random_x, 'y':random_y, 'index': i}
 
     def draw_nodes(self, nodes):
         for node in nodes:
@@ -65,7 +65,7 @@ class SVGWriter:
                 x=self.centers[node.label]['x'],
                 y=self.centers[node.label]['y'],
                 label=node.label,
-                node_index=node.index
+                node_index=self.centers[node.label]['index']
             )
 
     def draw_lines(self, connections):

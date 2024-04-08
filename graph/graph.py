@@ -24,19 +24,24 @@ class Graph:
     
     def __init__(self):
         self.nodes = []
-        self.node_index = 0
 
     def add_node(self, label: str) -> None:
         """
         Args:
             label (str): Indicates the label of a new node in the graph.
         """
-        new_node = Node(label, self.node_index)
+        new_node = Node(label)
         if str(new_node) not in list(map(str, self.nodes)):
             self.nodes.append(new_node)
-            self.node_index += 1
 
-    def create_connection(self, from_, to_, weight=None, directed=False):
+    def create_connection(self, from_: str, to_: str, weight: int = 1, directed: bool = False):
+        """
+        Args:
+            from_ (str): Indicates the label of the node it is creating the connection.
+            to_ (str): Indicates the label of the node that is being connected.
+            weight (int, optional): Indicates the weigth of the connection.
+            directed (boolean, optional): Indicates wether the connection is directed or not.
+        """
         from_node = None
         to_node = None
         for node in self.nodes:
@@ -66,27 +71,35 @@ class Graph:
 
         return all_connections
     
-    def create_from_adj_matrix(self, adj_matrix, directed=False,custom_labels=None):
-        self.nodes = create_nodes_from_labels(
+    def from_adjacency_matrix(adj_matrix: list , directed: bool = False, custom_labels: list = None):
+        """
+        Args:
+            adj_matrix (list): A list that represents the connections of the graph.
+            directed (bool, optional): Indicates wether the connections are directed or not.
+            custom_labels (list, optional): A list containing the labels of the nodes.
+        """
+        ajd_matrix_graph = Graph()
+        ajd_matrix_graph.nodes = create_nodes_from_labels(
             len(adj_matrix), 
             custom_labels
         )
 
-        self.node_dict = create_node_dict(self.nodes)
+        ajd_matrix_graph.node_dict = create_node_dict(ajd_matrix_graph.nodes)
 
         for i in range(len(adj_matrix)):
             for j in range(len(adj_matrix)):
                 weight = adj_matrix[i][j]
                 if weight != 0:
                     
-                    self.create_connection(
-                        self.node_dict[i],
-                        self.node_dict[j],
+                    ajd_matrix_graph.create_connection(
+                        ajd_matrix_graph.node_dict[i],
+                        ajd_matrix_graph.node_dict[j],
                         weight,
                         directed,
                     )
+        return ajd_matrix_graph
 
-    def generate_adj_matrix(self):
+    def generate_adjacency_matrix(self):
         matrix_size = len(self.nodes)
         adj_matrix = [[0 for i in range(matrix_size)] for i in range(matrix_size)]
         node_dict = invert_node_dict(create_node_dict(self.nodes))

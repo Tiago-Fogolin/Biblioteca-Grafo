@@ -37,5 +37,65 @@ class GraphTest(TestCase):
         self.assertEqual(1, len(graph.nodes))
         self.assertEqual('new_node', graph.nodes[0].label)
 
+    def test_create_connection(self):
+        graph = Graph()
+        graph.add_node('node1')
+        graph.add_node('node2')
+        graph.add_node('node3')
+
+        graph.create_connection('node1', 'node2')
+        test_conn = [{'from': 'node1', 'to': 'node2', 'weight': 1}]
+        self.assertEqual(test_conn, graph.get_connections())
+        graph.create_connection('node2', 'node1')
+        test_conn.append({
+            'from': 'node2', 'to': 'node1', 'weight': 1
+        })  
+        self.assertEqual(test_conn, graph.get_connections())
+        graph.create_connection('node3', 'node1', weight=3)
+        test_conn.append({
+            'from': 'node3', 'to': 'node1', 'weight': 3
+        }) 
+        self.assertEqual(test_conn, graph.get_connections())
+
+    def test_graph_from_adjacency_matrix(self):
+        adj_matrix = [
+            [0, 1],
+            [1, 0]
+        ]
+
+        graph = Graph.from_adjacency_matrix(adj_matrix, custom_labels=['one', 'two'])
+    
+        connections = [
+            {'from': 'one', 'to': 'two', 'weight': 1},
+            {'from': 'two', 'to': 'one', 'weight': 1}
+        ]
+
+        self.assertEqual(connections, graph.get_connections())
+
+        adj_matrix2 = [
+            [0, 2, 1],
+            [1, 0, 3],
+            [1, 2, 0],
+        ]
+
+        graph2 = Graph.from_adjacency_matrix(adj_matrix2, custom_labels=['one', 'two', 'three'])
+        connections = [
+            {'from': 'one', 'to': 'two', 'weight': 2},
+            {'from': 'one', 'to': 'three', 'weight': 1},
+            {'from': 'two', 'to': 'one', 'weight': 1},
+            {'from': 'two', 'to': 'three', 'weight': 3},
+            {'from': 'three', 'to': 'one', 'weight': 1},
+            {'from': 'three', 'to': 'two', 'weight': 2}
+        ]
+
+        self.assertEqual(connections, graph2.get_connections())
+
+
+
+
+        
+       
+
+
 
         
