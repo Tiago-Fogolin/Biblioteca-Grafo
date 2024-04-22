@@ -90,6 +90,39 @@ class GraphTest(TestCase):
 
         self.assertEqual(connections, graph2.get_connections())
 
+    def test_total_weight(self):
+        grafo = Graph()
+        grafo.add_node('node1')
+        grafo.add_node('node2')
+        grafo.add_node('node3')
+        grafo.add_node('node4')
+
+        grafo.create_connection('node1', 'node2', weight=2)
+        grafo.create_connection('node3', 'node4', weight=4)
+        grafo.create_connection('node4', 'node1', weight=5.5)
+        grafo.create_connection('node3', 'node2', weight=1.2)
+        grafo.create_connection('node2', 'node3', weight=1.6)
+
+        total_weight = 2 + 4 + 5.5 + 1.2 + 1.6
+        self.assertEqual(total_weight, grafo.get_total_weight())
+
+    def test_mean_weight(self):
+        grafo = Graph()
+        grafo.add_node('node1')
+        grafo.add_node('node2')
+        grafo.add_node('node3')
+        grafo.add_node('node4')
+
+        grafo.create_connection('node1', 'node2', weight=2)
+        grafo.create_connection('node3', 'node4', weight=4)
+        grafo.create_connection('node4', 'node1', weight=5.5)
+        grafo.create_connection('node3', 'node2', weight=1.2)
+        grafo.create_connection('node2', 'node3', weight=1.6)
+
+        mean = (2 + 4 + 5.5 + 1.2 + 1.6)/5
+
+        self.assertEqual(mean, grafo.get_mean_weight())
+
 
 
 

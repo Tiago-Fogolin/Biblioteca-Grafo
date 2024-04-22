@@ -112,6 +112,12 @@ class Graph:
 
         return adj_matrix
     
+    def get_total_weight(self):
+        return sum(list(map(lambda x: x['weight'], self.get_connections())))
+
+    def get_mean_weight(self):
+        return self.get_total_weight()/len(self.get_connections())
+    
     def output_html(self, file_name):
         svg_writer = SVGWriter()
 
