@@ -44,12 +44,39 @@ class SVGWriter:
                 x2=x2,
                 y2=y2,
                 stroke='black',
-                class_=f'{from_index}line{to_index}'
+                class_=f'{from_index}line{to_index}',
+                marker_end='url(#arrow)'
             )
         )
 
-    def draw_graph(self, nodes, connections):
+    def add_arrow_ref(self):
+        arrow_head = svg.Path(
+            d='M0,0 L0,6 L9,3 z',
+            fill='black'
+        )
+
+        arrow_marker = svg.Marker(
+            id='arrow',
+            markerWidth='30',
+            markerHeight='30',
+            refX='29',
+            refY='3',
+            orient='auto',
+            markerUnits='strokeWidth',
+            elements=[arrow_head]
+        )
+
+        defs = svg.Defs(
+            elements=[arrow_marker]
+        )
+
+        self.elements.append(defs)
+
+    def draw_graph(self, nodes, connections, directed):
         self.generate_node_positions(nodes)
+        if directed:
+            self.add_arrow_ref()
+
         self.draw_lines(connections)
         self.draw_nodes(nodes)
 

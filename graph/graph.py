@@ -22,8 +22,9 @@ class Graph:
     A class that represents a graph with nodes and its connections.
     """
     
-    def __init__(self):
+    def __init__(self, directed=False):
         self.nodes = []
+        self.directed = directed
 
     def add_node(self, label: str) -> None:
         """
@@ -78,7 +79,7 @@ class Graph:
             directed (bool, optional): Indicates wether the connections are directed or not.
             custom_labels (list, optional): A list containing the labels of the nodes.
         """
-        ajd_matrix_graph = Graph()
+        ajd_matrix_graph = Graph(directed)
         ajd_matrix_graph.nodes = create_nodes_from_labels(
             len(adj_matrix), 
             custom_labels
@@ -121,7 +122,7 @@ class Graph:
     def output_html(self, file_name):
         svg_writer = SVGWriter()
 
-        svg_writer.draw_graph(self.nodes, self.get_connections())
+        svg_writer.draw_graph(self.nodes, self.get_connections(), self.directed)
 
         html_writer = HtmlWriter(str(svg_writer.get_svg()))
 

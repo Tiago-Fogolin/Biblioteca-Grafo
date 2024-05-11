@@ -15,6 +15,6 @@ matriz_adjacencia = [
 ]
 
 
-grafo = Graph.from_adjacency_matrix(matriz_adjacencia, directed=True)
+grafo = Graph.from_adjacency_matrix(matriz_adjacencia, directed=False)
 
 grafo.output_html('teste')
