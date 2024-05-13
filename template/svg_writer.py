@@ -1,5 +1,6 @@
 import svg
 import random
+from layouts.layouts import RandomLayout
 
 
 class SVGWriter:
@@ -72,19 +73,17 @@ class SVGWriter:
 
         self.elements.append(defs)
 
-    def draw_graph(self, nodes, connections, directed):
-        self.generate_node_positions(nodes)
+    def draw_graph(self, nodes, connections, directed, layout):
+        self.generate_node_positions(nodes, layout)
         if directed:
             self.add_arrow_ref()
 
         self.draw_lines(connections)
         self.draw_nodes(nodes)
 
-    def generate_node_positions(self, nodes):
-        for i, node in enumerate(nodes):
-            random_x = random.randint(20, 600)
-            random_y = random.randint(20, 600)
-            self.centers[node.label] = {'x':random_x, 'y':random_y, 'index': i}
+    def generate_node_positions(self, nodes, layout):
+        position_layout = layout()
+        self.centers = position_layout.generate_positions(nodes)
 
     def draw_nodes(self, nodes):
         for node in nodes:

@@ -1,6 +1,7 @@
 from graph.node import Node
 from template.html_writer import HtmlWriter
 from template.svg_writer import SVGWriter
+from layouts.layouts import RandomLayout
 
 def create_nodes_from_labels(size, labels):
         str_list = labels if labels else list(map(str, range(size)))
@@ -119,10 +120,10 @@ class Graph:
     def get_mean_weight(self):
         return self.get_total_weight()/len(self.get_connections())
     
-    def output_html(self, file_name):
+    def output_html(self, file_name, layout=RandomLayout):
         svg_writer = SVGWriter()
 
-        svg_writer.draw_graph(self.nodes, self.get_connections(), self.directed)
+        svg_writer.draw_graph(self.nodes, self.get_connections(), self.directed, layout)
 
         html_writer = HtmlWriter(str(svg_writer.get_svg()))
 
