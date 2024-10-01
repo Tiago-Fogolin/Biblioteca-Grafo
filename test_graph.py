@@ -44,16 +44,16 @@ class GraphTest(TestCase):
         graph.add_node('node3')
 
         graph.create_connection('node1', 'node2')
-        test_conn = [{'from': 'node1', 'to': 'node2', 'weight': 1}]
+        test_conn = [{'from': 'node1', 'to': 'node2', 'weight': 1, 'directed': False}]
         self.assertEqual(test_conn, graph.get_connections())
         graph.create_connection('node2', 'node1')
         test_conn.append({
-            'from': 'node2', 'to': 'node1', 'weight': 1
+            'from': 'node2', 'to': 'node1', 'weight': 1, 'directed': False
         })  
         self.assertEqual(test_conn, graph.get_connections())
         graph.create_connection('node3', 'node1', weight=3)
         test_conn.append({
-            'from': 'node3', 'to': 'node1', 'weight': 3
+            'from': 'node3', 'to': 'node1', 'weight': 3, 'directed': False
         }) 
         self.assertEqual(test_conn, graph.get_connections())
 
@@ -66,8 +66,8 @@ class GraphTest(TestCase):
         graph = Graph.from_adjacency_matrix(adj_matrix, custom_labels=['one', 'two'])
     
         connections = [
-            {'from': 'one', 'to': 'two', 'weight': 1},
-            {'from': 'two', 'to': 'one', 'weight': 1}
+            {'from': 'one', 'to': 'two', 'weight': 1, 'directed': False},
+            {'from': 'two', 'to': 'one', 'weight': 1, 'directed': False}
         ]
 
         self.assertEqual(connections, graph.get_connections())
@@ -80,12 +80,12 @@ class GraphTest(TestCase):
 
         graph2 = Graph.from_adjacency_matrix(adj_matrix2, custom_labels=['one', 'two', 'three'])
         connections = [
-            {'from': 'one', 'to': 'two', 'weight': 2},
-            {'from': 'one', 'to': 'three', 'weight': 1},
-            {'from': 'two', 'to': 'one', 'weight': 1},
-            {'from': 'two', 'to': 'three', 'weight': 3},
-            {'from': 'three', 'to': 'one', 'weight': 1},
-            {'from': 'three', 'to': 'two', 'weight': 2}
+            {'from': 'one', 'to': 'two', 'weight': 2, 'directed': False},
+            {'from': 'one', 'to': 'three', 'weight': 1, 'directed': False},
+            {'from': 'two', 'to': 'one', 'weight': 1, 'directed': False},
+            {'from': 'two', 'to': 'three', 'weight': 3, 'directed': False},
+            {'from': 'three', 'to': 'one', 'weight': 1, 'directed': False},
+            {'from': 'three', 'to': 'two', 'weight': 2, 'directed': False}
         ]
 
         self.assertEqual(connections, graph2.get_connections())

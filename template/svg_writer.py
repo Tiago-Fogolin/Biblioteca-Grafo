@@ -37,7 +37,9 @@ class SVGWriter:
             )
         )
 
-    def add_line(self, x1, y1, x2, y2, from_index, to_index):
+    def add_line(self, x1, y1, x2, y2, from_index, to_index, directed=False):
+        marker_end = 'url(#arrow)'  if directed else ''
+
         self.elements.append(
             svg.Line(
                 x1=x1,
@@ -46,7 +48,7 @@ class SVGWriter:
                 y2=y2,
                 stroke='black',
                 class_=f'{from_index}line{to_index}',
-                marker_end='url(#arrow)'
+                marker_end=marker_end
             )
         )
 
@@ -73,11 +75,9 @@ class SVGWriter:
 
         self.elements.append(defs)
 
-    def draw_graph(self, nodes, connections, directed, layout):
+    def draw_graph(self, nodes, connections, layout):
         self.generate_node_positions(nodes, layout)
-        if directed:
-            self.add_arrow_ref()
-
+        self.add_arrow_ref()
         self.draw_lines(connections)
         self.draw_nodes(nodes)
 
@@ -104,7 +104,8 @@ class SVGWriter:
                 x2=self.centers[to_node]['x'],
                 y2=self.centers[to_node]['y'],
                 from_index=self.centers[from_node]['index'],
-                to_index=self.centers[to_node]['index']
+                to_index=self.centers[to_node]['index'],
+                directed=conn['directed']
             )
 
     def get_svg(self):

@@ -2,6 +2,7 @@ from graph.node import Node
 from template.html_writer import HtmlWriter
 from template.svg_writer import SVGWriter
 from layouts.layouts import RandomLayout
+from file_reader.file_reader import NetFileReader
 
 def create_nodes_from_labels(size, labels):
         str_list = labels if labels else list(map(str, range(size)))
@@ -23,9 +24,8 @@ class Graph:
     A class that represents a graph with nodes and its connections.
     """
     
-    def __init__(self, directed=False):
+    def __init__(self):
         self.nodes = []
-        self.directed = directed
 
     def add_node(self, label: str) -> None:
         """
@@ -68,6 +68,7 @@ class Graph:
                 formatted_conn['from'] = str(node)
                 formatted_conn['to'] = str(conn['node'])
                 formatted_conn['weight'] = conn['weight']
+                formatted_conn['directed'] = conn['directed']
                 
                 all_connections.append(formatted_conn)
 
@@ -80,7 +81,7 @@ class Graph:
             directed (bool, optional): Indicates wether the connections are directed or not.
             custom_labels (list, optional): A list containing the labels of the nodes.
         """
-        ajd_matrix_graph = Graph(directed)
+        ajd_matrix_graph = Graph()
         ajd_matrix_graph.nodes = create_nodes_from_labels(
             len(adj_matrix), 
             custom_labels
@@ -100,6 +101,32 @@ class Graph:
                         directed,
                     )
         return ajd_matrix_graph
+    
+    def _from_dict(dictionary: dict):
+        new_Graph = Graph()
+
+        for node in dictionary['nodes']:
+            new_Graph.add_node(node)
+        
+        for edge in dictionary['edges']:
+            _from, _to, _weight = edge['from'], edge['to'], edge['weight']
+
+            new_Graph.create_connection(_from, _to, _weight, directed=False)
+        
+        for arc in dictionary['arcs']:
+            _from, _to, _weight = arc['from'], arc['to'], arc['weight']
+
+            new_Graph.create_connection(_from, _to, _weight, directed=True)
+
+        return new_Graph
+
+
+    def from_net_file(file_path: str):
+        file_reader = NetFileReader()
+
+        new_graph = Graph._from_dict(file_reader.read_file(file_path))
+
+        return new_graph
 
     def generate_adjacency_matrix(self):
         matrix_size = len(self.nodes)
@@ -123,7 +150,7 @@ class Graph:
     def output_html(self, file_name, layout=RandomLayout):
         svg_writer = SVGWriter()
 
-        svg_writer.draw_graph(self.nodes, self.get_connections(), self.directed, layout)
+        svg_writer.draw_graph(self.nodes, self.get_connections(), layout)
 
         html_writer = HtmlWriter(str(svg_writer.get_svg()))
 

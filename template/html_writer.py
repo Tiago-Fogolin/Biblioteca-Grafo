@@ -15,6 +15,6 @@ class HtmlWriter:
 
         final_string  = svg_string .replace('ESCAPE_SCRIPT', script_string)
 
-        with open(file_name + '.html', 'w') as file:
+        with open(file_name + '.html', 'w', encoding='utf8') as file:
             file.write(final_string)
 
