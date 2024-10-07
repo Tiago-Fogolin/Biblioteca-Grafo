@@ -3,21 +3,40 @@ from template.html_writer import HtmlWriter
 from template.svg_writer import SVGWriter
 from layouts.layouts import RandomLayout
 from file_reader.file_reader import NetFileReader
+from file_writer.file_writer import NetFileWriter
 
 def create_nodes_from_labels(size, labels):
         str_list = labels if labels else list(map(str, range(size)))
         
         return list(map(Node, str_list))
     
-def create_node_dict(nodes):
+def create_node_dict(nodes, start_index=0):
     node_dict = dict(
-        [(i, str(node)) for i, node in enumerate(nodes)]
+        [(i, str(node)) for i, node in enumerate(nodes, start_index)]
     )
 
     return node_dict
 
 def invert_node_dict(node_dict):
     return dict( (node_label, i) for i, node_label in node_dict.items() )
+
+def create_node_tuple_list(nodes, connections):
+    node_dict = invert_node_dict(create_node_dict(nodes, start_index=1))
+    edges_tuple_list = []
+    arcs_tuple_list = []
+
+    for conn in connections:
+        from_node = node_dict[conn['from']]
+        to_node = node_dict[conn['to']]
+        weight = conn['weight']
+        
+        if conn['directed']:
+            arcs_tuple_list.append((from_node, to_node, weight))
+            continue
+
+        edges_tuple_list.append((from_node, to_node, weight))
+
+    return edges_tuple_list, arcs_tuple_list
 
 class Graph:
     """
@@ -155,3 +174,10 @@ class Graph:
         html_writer = HtmlWriter(str(svg_writer.get_svg()))
 
         html_writer.output(file_name)
+
+    def output_net_file(self, path):
+        net_file_writer = NetFileWriter()
+        
+        edges, arcs = create_node_tuple_list(self.nodes, self.get_connections())
+
+        net_file_writer.write_file(path, create_node_dict(self.nodes, start_index=1), edges, arcs)
