@@ -3,3 +3,5 @@
 __pycache__/
 *.html
 !template.html
+*.net
+*.txt

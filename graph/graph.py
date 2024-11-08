@@ -45,6 +45,7 @@ class Graph:
     
     def __init__(self):
         self.nodes = []
+        self.normalized_positions = {}
 
     def add_node(self, label: str) -> None:
         """
@@ -124,8 +125,10 @@ class Graph:
     def _from_dict(dictionary: dict):
         new_Graph = Graph()
 
-        for node in dictionary['nodes']:
-            new_Graph.add_node(node)
+        for i, node in enumerate(dictionary['nodes']):
+            new_Graph.add_node(node['node'])
+            if node['x'] and node['y']:
+                new_Graph.normalized_positions[node['node']] = {'x': node['x'], 'y': node['y'], 'index': i}
         
         for edge in dictionary['edges']:
             _from, _to, _weight = edge['from'], edge['to'], edge['weight']
@@ -166,10 +169,10 @@ class Graph:
     def get_mean_weight(self):
         return self.get_total_weight()/len(self.get_connections())
     
-    def output_html(self, file_name, layout=RandomLayout):
+    def output_html(self, file_name, layout=RandomLayout, override_positions=False):
         svg_writer = SVGWriter()
 
-        svg_writer.draw_graph(self.nodes, self.get_connections(), layout)
+        svg_writer.draw_graph(self.nodes, self.get_connections(), layout, self.normalized_positions, override_positions)
 
         html_writer = HtmlWriter(str(svg_writer.get_svg()))
 

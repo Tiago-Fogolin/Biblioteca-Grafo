@@ -1,7 +1,5 @@
 import svg
-import random
-from layouts.layouts import RandomLayout
-
+from layouts import layouts
 
 class SVGWriter:
 
@@ -75,8 +73,12 @@ class SVGWriter:
 
         self.elements.append(defs)
 
-    def draw_graph(self, nodes, connections, layout):
-        self.generate_node_positions(nodes, layout)
+    def draw_graph(self, nodes, connections, layout, normalized_positions, override_positions):
+        if not normalized_positions or override_positions:
+            self.generate_node_positions(nodes, layout)
+        else:
+            self.centers = layouts.denormalize_positions(normalized_positions)
+
         self.add_arrow_ref()
         self.draw_lines(connections)
         self.draw_nodes(nodes)
@@ -110,5 +112,8 @@ class SVGWriter:
 
     def get_svg(self):
         return svg.SVG(
+            width="100%",
+            height="100%",
+            viewBox="20 20 1480 680",
             elements=self.elements
         )

@@ -4,7 +4,8 @@ from layouts.layouts import RandomLayout, CircularLayout
 
 
 
-grafo = Graph.from_net_file('testenet.txt')
+grafo = Graph.from_net_file('net.net')
 
 
-grafo.output_net_file('outputnet.txt')
+grafo.output_html('testenet')
+

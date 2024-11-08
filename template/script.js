@@ -1,16 +1,28 @@
 var circle;
 var isDragging = false;
+var isPanning = false;
 var previousX, previousY;
+var svg = document.querySelector("svg");
+
+var viewBox = { x: 0, y: 0, width: 1500, height: 700 };
+svg.setAttribute("viewBox", `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
+
 
 
 function moveCircle(dx, dy) {
     let nodeIndex = getNodeIndex();
     let label = getLabel(nodeIndex);
     let lines = getLines(nodeIndex);
+
+    dx *= viewBox.width / svg.clientWidth;
+    dy *= viewBox.height / svg.clientHeight;
+
     var cx = parseFloat(circle.getAttribute('cx'));
     var cy = parseFloat(circle.getAttribute('cy'));
+
     moveLabel(label, dx, dy);
     moveLines(lines[0], lines[1], dx, dy);
+    
     circle.setAttribute('cx', cx + dx);
     circle.setAttribute('cy', cy + dy);
     
@@ -73,7 +85,21 @@ function onMouseMove(event) {
         moveCircle(dx, dy);
         previousX = mouseX;
         previousY = mouseY;
+    } else if (isPanning) {
+        var mouseX = event.clientX;
+        var mouseY = event.clientY;
+        var dx = mouseX - previousX;
+        var dy = mouseY - previousY;
+        panSVG(dx, dy);
+        previousX = mouseX;
+        previousY = mouseY;
     }
+}
+
+function panSVG(dx, dy) {
+    viewBox.x -= dx * (viewBox.width / window.innerWidth);
+    viewBox.y -= dy * (viewBox.height / window.innerHeight);
+    svg.setAttribute("viewBox", `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
 }
 
 function onMouseDown(event) {
@@ -82,13 +108,41 @@ function onMouseDown(event) {
         previousX = event.clientX;
         previousY = event.clientY;
         circle = event.target;
+    } else {
+        isPanning = true;
+        previousX = event.clientX;
+        previousY = event.clientY;
     }
 }
 
+
 function onMouseUp() {
     isDragging = false;
+    isPanning = false;
+}
+
+function onWheel(event) {
+    event.preventDefault();
+    const zoomFactor = 0.9; 
+
+    const scale = event.deltaY < 0 ? zoomFactor : (1 / zoomFactor);
+
+    const mouseXRatio = (event.clientX - svg.getBoundingClientRect().left) / svg.clientWidth;
+    const mouseYRatio = (event.clientY - svg.getBoundingClientRect().top) / svg.clientHeight;
+
+    const newWidth = viewBox.width * scale;
+    const newHeight = viewBox.height * scale;
+
+    viewBox.x -= (newWidth - viewBox.width) * mouseXRatio;
+    viewBox.y -= (newHeight - viewBox.height) * mouseYRatio;
+    viewBox.width = newWidth;
+    viewBox.height = newHeight;
+
+    // Atualizar o viewBox do SVG
+    svg.setAttribute("viewBox", `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
 }
 
 document.addEventListener('mousemove', onMouseMove);
 document.addEventListener('mousedown', onMouseDown);
 document.addEventListener('mouseup', onMouseUp);
+document.addEventListener('wheel', onWheel, { passive: false });
